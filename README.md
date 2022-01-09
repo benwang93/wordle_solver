@@ -23,8 +23,8 @@ Feature to suggest best starting word.
 Option #1: Basically, what n-letter word contains the most of "RSTLNE" (wheel of fortune)?
 Option #2: Or even better, process all n-letter words and see which letters are most common, then see which words contain the most 
 
-## References:
+## References (and special thanks to):
 
 - [Wordle](https://www.powerlanguage.co.uk/wordle/)
-- [Word list](http://www-personal.umich.edu/~jlawler/wordlist)
+- [Word list / dictionary file](http://www-personal.umich.edu/~jlawler/wordlist)
 - [Wordle-like game with variable length](http://foldr.moe/hello-wordl/)
