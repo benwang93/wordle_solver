@@ -1,5 +1,23 @@
 var wordLength = 5
 
+function initLetterCounts()
+{
+    var map = {}
+    for (let i = 0; i < 26; i++)
+    {
+        map[String.fromCharCode(i + 97)] = 0
+    }
+    return map;
+}
+
+function debugLogCharCounts(charCounts)
+{
+    for (let i = 0; i < 26; i++)
+    {
+        console.log("Count " + String.fromCharCode(i + 97) + ": " + charCounts[String.fromCharCode(i + 97)])
+    }
+}
+
 function updateResults()
 {
     console.log("Trying to read word list...")
@@ -66,10 +84,72 @@ function updateResults()
         console.log("Number of " + wordLength + "-letter words: " + filteredWords.length + " words")
         document.getElementById("numResultsHeading").innerHTML = filteredWords.length + " Possible Results"
 
+        // Now score remaining words
+        // Start by gathering stats on occurrence of letters
+        var charCounts = initLetterCounts();
+        // debugLogCharCounts(charCounts)
+
+        for (let word of filteredWords)
+        {
+            for (let c of word)
+            {
+                charCounts[c]++;
+            }
+        }
+
+        debugLogCharCounts(charCounts);
+
+        // Calculate score for each word
+        var wordScores = [];
+        for (let word of filteredWords)
+        {
+            var wordScore = 0;
+            var countedLetters = [];
+
+            for (let c of word)
+            {
+                if (!countedLetters.includes(c))
+                {
+                    wordScore += charCounts[c];
+                    countedLetters.push(c);
+                }
+            }
+
+            wordScores.push({
+                word: word,
+                score: wordScore
+            })
+        }
+
+
+        // Sort word list by score
+        // TODO: Make this filter selectable (score up/down, alphabetical up/down)
+        wordScores.sort((a, b) => {
+            // Sort descending order by score
+            return b.score - a.score;
+        });
+
+        // Create table header
+        let headerRow = document.createElement('tr');
+        let wordCol = document.createElement('td');
+        let scoreCol = document.createElement('td');
+        wordCol.innerHTML = "<b>Word</b>";
+        // wordCol.align = "center"
+        scoreCol.innerHTML = "<b>Score</b>";
+        // scoreCol.align = "center"
+        headerRow.appendChild(wordCol);
+        headerRow.appendChild(scoreCol);
+        outputTable.appendChild(headerRow);
+
         // Display filtered results
-        filteredWords.forEach(function(word) {
+        wordScores.forEach(function(word) {
             let row = document.createElement('tr');
-            row.innerHTML = word;
+            let wordCol = document.createElement('td');
+            let scoreCol = document.createElement('td');
+            wordCol.innerHTML = word.word;
+            scoreCol.innerHTML = word.score;
+            row.appendChild(wordCol);
+            row.appendChild(scoreCol);
             outputTable.appendChild(row);
         });
     }
