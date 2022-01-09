@@ -1,11 +1,11 @@
-var wordLength = 5
+var wordLength = 5;
 
 function initLetterCounts()
 {
     var map = {}
     for (let i = 0; i < 26; i++)
     {
-        map[String.fromCharCode(i + 97)] = 0
+        map[String.fromCharCode(i + 97)] = 0;
     }
     return map;
 }
@@ -14,25 +14,25 @@ function debugLogCharCounts(charCounts)
 {
     for (let i = 0; i < 26; i++)
     {
-        console.log("Count " + String.fromCharCode(i + 97) + ": " + charCounts[String.fromCharCode(i + 97)])
+        console.log("Count " + String.fromCharCode(i + 97) + ": " + charCounts[String.fromCharCode(i + 97)]);
     }
 }
 
 function updateResults()
 {
-    console.log("Trying to read word list...")
+    console.log("Trying to read word list...");
     var req = new XMLHttpRequest();
     req.onload = function(){
-        console.log("Got response")
-        document.getElementById("numResultsHeading").innerHTML = "Heard-ling the word-lings..."
+        console.log("Got response");
+        document.getElementById("numResultsHeading").innerHTML = "Heard-ling the word-lings...";
 
-        var words = this.responseText.split("\n")
+        var words = this.responseText.split("\n");
         words = words.map(s => s.trim());
         
-        console.log("Originally found " + words.length + " words")
+        console.log("Originally found " + words.length + " words");
         
         var outputTable = document.getElementById("outputTable");
-        outputTable.innerHTML = ""
+        outputTable.innerHTML = "";
 
         // let wordLength = parseInt(document.getElementById('wordLength').value);
         let disallowedLetters = document.getElementById('disallowedLetters').value.toLowerCase();
@@ -96,8 +96,8 @@ function updateResults()
         filteredWords = filteredWords.filter(filterKnownLettterPositions);
         filteredWords = filteredWords.filter(filterIncorrectGuesses);
 
-        console.log("Number of " + wordLength + "-letter words: " + filteredWords.length + " words")
-        document.getElementById("numResultsHeading").innerHTML = filteredWords.length + " Possible Results"
+        console.log("Number of " + wordLength + "-letter words: " + filteredWords.length + " words");
+        document.getElementById("numResultsHeading").innerHTML = filteredWords.length + " Possible Results";
 
         // Now score remaining words
         // Start by gathering stats on occurrence of letters
@@ -133,7 +133,7 @@ function updateResults()
             wordScores.push({
                 word: word,
                 score: wordScore
-            })
+            });
         }
 
 
@@ -172,7 +172,7 @@ function updateResults()
 
 function updateNumberLetters()
 {
-    console.log("Updating number of letters")
+    console.log("Updating number of letters");
 
     var knownLettersForm = document.getElementById("knownLettersForm");
     knownLettersForm.innerHTML = ""
@@ -202,5 +202,13 @@ function updateNumberLetters()
     knownLettersForm.appendChild(correctRow);
     knownLettersForm.appendChild(incorrectRow);
 
-    updateResults()
+    updateResults();
+}
+
+function resetWordForm()
+{
+    document.getElementById("wordForm").reset();
+    console.log("Reset form");
+
+    updateResults();
 }

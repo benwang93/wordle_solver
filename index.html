@@ -36,7 +36,7 @@
 
     <br>
 
-    <div>
+    <form id="wordForm">
         <label for="disallowedLetters"><b>Letters to exclude</b> (no spaces or commas, duplicates OK):</label>
         <input type="text" name="disallowedLetters" id="disallowedLetters" value="">
         <br>
@@ -51,11 +51,13 @@
         <table id="knownLettersForm">
             <!-- Correct/Incorrect letter positions go here -->
         </table>
+    </form>
 
-        <br>
+    <br>
 
-        <input id="updateResults" type="button" value="Update results" onclick="updateResults();" />
-    </div>
+    <input id="updateResults" type="button" value="Update results" onclick="updateResults();" />
+    <input id="resetForm" type="button" value="Start over" onclick="resetWordForm();" />
+    
     <br>
 
     <br>
