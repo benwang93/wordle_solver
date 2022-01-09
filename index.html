@@ -2,28 +2,8 @@
 
 
 <html>
-    <!-- <script>
-        // Requiring fs module in which
-        // readFile function is defined.
-        const fs = require('fs')
-          
-        // Reading data in utf-8 format
-        // which is a type of character set.
-        // Instead of 'utf-8' it can be 
-        // other character set also like 'ascii'
-        fs.readFile('Input.txt', 'utf-8', (err, data) => {
-            if (err) throw err;
-          
-            // Converting Raw Buffer to text
-            // data using tostring function.
-            console.log(data);
-        })
-    </script> -->
-
     <head>
         <title>Wordle Solver</title>
-        <!-- <script data-main="scripts/app" src="scripts/require.js"></script> -->
-        <!-- <script src="scripts/app.js"></script> -->
     </head>
     <body>
         <p>Hello world!</p>
@@ -31,23 +11,16 @@
         <table id="outputTable">
             <th>Filtered words</th>
         </table>
-        <input type="file" onchange=reader.readAsText(this.files[0]);>
+
         <script>
+            console.log("Trying to read word list...")
+            var req = new XMLHttpRequest();
+            req.onload = function(){
+                // process_webgl_data(this.responseText);
+                console.log("Got response")
 
-            // const input = "wordlist.txt"; //csvFile.files[0];
-            const reader = new FileReader();
+                let text = this.responseText;
 
-            // function adddToDemo(word) {
-            //     var demo = document.getElementById("demo");
-            //     demo.innerHTML += word + "|"
-            // }
-
-            reader.onload = function (e) {
-                const text = e.target.result;
-                // const data = csvToArray(text);
-                // document.write(JSON.stringify(data));
-                // document.set
-                // document.getElementById("demo").innerHTML = text;
                 var words = text.split("\n")
                 words = words.map(s => s.trim());
                 // console.log(words)
@@ -73,23 +46,11 @@
 
                     let row = document.createElement('tr');
                     row.innerHTML = word;
-                    demo.appendChild(row)
+                    demo.appendChild(row);
                 });
-            };
-            // reader.readAsText(input);
-            // document.getElementById("demo").innerHTML = "Paragraph changed!";
-        </script>
-        <!-- <script>
-            const fs = require('fs')
-
-            fs.readFile('wordlist.txt', 'utf8' , (err, data) => {
-            if (err) {
-                console.error(err)
-                return
             }
-            console.log(data)
-            })
-        </script> -->
-        <!-- <script src="scripts/app.js"></script> -->
+            req.open('GET', './wordlist.txt');
+            req.send();
+        </script>
     </body>
 </html>

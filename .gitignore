@@ -1,1 +1,14 @@
+# Virtual environment
+venv/
+
+# Temporary files
+*.swp
+~*
+*#
+.DS_Store
+
+# VS Code settings
+.vscode/
+
+# Random stuff for dev
 test/
