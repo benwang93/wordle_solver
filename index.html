@@ -1,17 +1,38 @@
-
-
-
 <html>
-    <head>
-        <title>Wordle Solver</title>
-    </head>
-    <body>
-        <p>Hello world!</p>
-        <p id="demo">REPLACE ME</p>
-        <table id="outputTable">
-            <th>Filtered words</th>
-        </table>
 
-        <script src="scripts/app.js"></script>
-    </body>
+<head>
+    <title>Wordle Solver</title>
+</head>
+
+<body>
+    <h1>Wordle Solver</h1>
+    <p>For helping solve Wordle-like puzzles.</p>
+
+    <br>
+
+    <p>Let's start with some information on your puzzle</p>
+
+
+    <label for="wordLength">Number of letters</label>:</label>
+    <input type="text" name="wordLength" id="wordLength" value="5">
+    <br>
+
+    <label for="disallowedLetters">Letters to exclude:</label>
+    <input type="text" name="disallowedLetters" id="disallowedLetters" value="">
+    <br>
+
+    <input id="updateResults" type="button" value="Update results" onclick="updateResults();" />
+
+
+    <br>
+
+    <h2 id="numResultsHeading"> Possible results:</h2>
+    <table id="outputTable">
+        <!-- <th>Filtered words</th> -->
+    </table>
+
+    <script src="scripts/app.js"></script>
+    <script>updateResults()</script>
+</body>
+
 </html>
