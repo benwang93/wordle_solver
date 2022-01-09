@@ -1,3 +1,19 @@
+var wordLength = 5
+
+function updateNumberLetters()
+{
+    console.log("Updating number of letters")
+
+    var knownLettersForm = document.getElementById("knownLettersForm");
+    knownLettersForm.innerHTML = ""
+
+    wordLength = parseInt(document.getElementById('wordLength').value);
+
+    for (let i = 0; i < wordLength; i++) {
+        knownLettersForm.innerHTML += '<input type="text" name="knownLetter' + i + '" id="knownLetter' + i + '" value="" style="width: 20px;">'
+    }
+}
+
 
 function updateResults()
 {
@@ -44,10 +60,22 @@ function updateResults()
             return true;
         }
 
+        function filterKnownLettterPositions(word) {
+            for (let i = 0; i < wordLength; i++)
+            {
+                if ((document.getElementById('knownLetter' + i).value.length > 0) && word[i][0] != document.getElementById('knownLetter' + i).value)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
         
         var filteredWords = words.filter(wordsOfLength);
         filteredWords = filteredWords.filter(wordsWithoutLetters);
         filteredWords = filteredWords.filter(wordsWithLetters);
+        filteredWords = filteredWords.filter(filterKnownLettterPositions);
 
         console.log("Number of " + wordLength + "-letter words: " + filteredWords.length + " words")
         document.getElementById("numResultsHeading").innerHTML = filteredWords.length + " Possible Results"

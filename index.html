@@ -6,27 +6,46 @@
 
 <body>
     <h1>Wordle Solver</h1>
-    <p>For helping solve Wordle-like puzzles.</p>
+    <p>For helping solve Wordle-like puzzles!</p>
+
+    <ul>
+        <li><a href="https://www.powerlanguage.co.uk/wordle/">https://www.powerlanguage.co.uk/wordle/</a></li>
+        <li><a href="http://foldr.moe/hello-wordl/">http://foldr.moe/hello-wordl/</a></li>
+    </ul>
 
     <br>
 
     <p>Let's start with some information on your puzzle</p>
 
+    <form>
+        <label for="wordLength">Number of letters</label>:</label>
+        <input type="text" name="wordLength" id="wordLength" value="5">
 
-    <label for="wordLength">Number of letters</label>:</label>
-    <input type="text" name="wordLength" id="wordLength" value="5">
+        <br>
+
+        <input id="updateResults" type="button" value="Update number of Letters" onclick="updateNumberLetters();" />
+    </form>
+
     <br>
 
-    <label for="disallowedLetters">Letters to exclude:</label>
-    <input type="text" name="disallowedLetters" id="disallowedLetters" value="">
+    <div>
+        <label for="disallowedLetters">Letters to exclude:</label>
+        <input type="text" name="disallowedLetters" id="disallowedLetters" value="">
+        <br>
+
+        <label for="requiredLetters">Letters that must be included:</label>
+        <input type="text" name="requiredLetters" id="requiredLetters" value="">
+        <br>
+
+        <label for="knownLetters">Known letters:</label>
+        <form id="knownLettersForm">
+            <!-- <input type="text" name="requiredLetters" id="requiredLetters" value="" style="width: 20px;">-->
+        </form>
+        <br>
+
+        <input id="updateResults" type="button" value="Update results" onclick="updateResults();" />
+    </div>
     <br>
-
-    <label for="requiredLetters">Letters that must be included:</label>
-    <input type="text" name="requiredLetters" id="requiredLetters" value="">
-    <br>
-
-    <input id="updateResults" type="button" value="Update results" onclick="updateResults();" />
-
 
     <br>
 
@@ -36,7 +55,10 @@
     </table>
 
     <script src="scripts/app.js"></script>
-    <script>updateResults()</script>
+    <script>
+        updateNumberLetters();
+        updateResults();
+    </script>
 </body>
 
 </html>
