@@ -13,15 +13,28 @@ function updateResults()
         
         var outputTable = document.getElementById("outputTable");
         outputTable.innerHTML = ""
-        
-        const filteredWords = words.filter(wordsOfLength);
 
         let wordLength = parseInt(document.getElementById('wordLength').value);
+        let disallowedLetters = document.getElementById('disallowedLetters').value;
 
         function wordsOfLength(word) {
-            let wordLength = parseInt(document.getElementById('wordLength').value);
             return word.length == wordLength;
         }
+
+        function wordsWithoutLetters(word) {
+            for (let c of disallowedLetters) {
+                if (word.includes(c))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        
+        var filteredWords = words.filter(wordsOfLength);
+        filteredWords = filteredWords.filter(wordsWithoutLetters);
 
         console.log("Number of " + wordLength + "-letter words: " + filteredWords.length + " words")
         document.getElementById("numResultsHeading").innerHTML = filteredWords.length + " Possible Results"
