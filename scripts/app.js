@@ -24,7 +24,7 @@ function updateResults()
     var req = new XMLHttpRequest();
     req.onload = function(){
         console.log("Got response")
-        document.getElementById("numResultsHeading").innerHTML = "Crunching..."
+        document.getElementById("numResultsHeading").innerHTML = "Heard-ling the word-lings..."
 
         var words = this.responseText.split("\n")
         words = words.map(s => s.trim());
@@ -67,7 +67,21 @@ function updateResults()
         function filterKnownLettterPositions(word) {
             for (let i = 0; i < wordLength; i++)
             {
-                if ((document.getElementById('knownLetter' + i).value.length > 0) && word[i][0] != document.getElementById('knownLetter' + i).value.toLowerCase())
+                if ((document.getElementById('knownLetter' + i).value.length > 0) && word[i] != document.getElementById('knownLetter' + i).value.toLowerCase()[0])
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        function filterIncorrectGuesses(word) {
+            for (let i = 0; i < wordLength; i++)
+            {
+                let incorrectGuesses = document.getElementById('wrongLetter' + i).value.toLowerCase();
+                
+                if (incorrectGuesses.includes(word[i]))
                 {
                     return false;
                 }
@@ -80,6 +94,7 @@ function updateResults()
         filteredWords = filteredWords.filter(wordsWithoutLetters);
         filteredWords = filteredWords.filter(wordsWithLetters);
         filteredWords = filteredWords.filter(filterKnownLettterPositions);
+        filteredWords = filteredWords.filter(filterIncorrectGuesses);
 
         console.log("Number of " + wordLength + "-letter words: " + filteredWords.length + " words")
         document.getElementById("numResultsHeading").innerHTML = filteredWords.length + " Possible Results"
@@ -164,9 +179,25 @@ function updateNumberLetters()
 
     wordLength = parseInt(document.getElementById('wordLength').value);
 
+    // Create table for entering good and bad letters
+    let correctRow = document.createElement('tr');
+    let incorrectRow = document.createElement('tr');
+    let correctColHeader = document.createElement('td');
+    let incorrectColHeader = document.createElement('td');
+    correctColHeader.innerHTML = "<b>Correct letter</b>";
+    incorrectColHeader.innerHTML = "<b>Incorrect guesses</b>";
+    correctRow.appendChild(correctColHeader);
+    incorrectRow.appendChild(incorrectColHeader);
     for (let i = 0; i < wordLength; i++) {
-        knownLettersForm.innerHTML += '<input type="text" name="knownLetter' + i + '" id="knownLetter' + i + '" value="" style="width: 20px;">'
+        let correctCol = document.createElement('td');
+        let incorrectCol = document.createElement('td');
+        correctCol.innerHTML += '<input type="text" name="knownLetter' + i + '" id="knownLetter' + i + '" value="" style="width: 20px;">';
+        incorrectCol.innerHTML += '<input type="text" name="wrongLetter' + i + '" id="wrongLetter' + i + '" value="" style="width: 80px;">';
+        correctRow.appendChild(correctCol);
+        incorrectRow.appendChild(incorrectCol);
     }
+    knownLettersForm.appendChild(correctRow);
+    knownLettersForm.appendChild(incorrectRow);
 
     updateResults()
 }
