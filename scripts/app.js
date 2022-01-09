@@ -134,9 +134,7 @@ function updateResults()
         let wordCol = document.createElement('td');
         let scoreCol = document.createElement('td');
         wordCol.innerHTML = "<b>Word</b>";
-        // wordCol.align = "center"
         scoreCol.innerHTML = "<b>Score</b>";
-        // scoreCol.align = "center"
         headerRow.appendChild(wordCol);
         headerRow.appendChild(scoreCol);
         outputTable.appendChild(headerRow);
@@ -146,7 +144,7 @@ function updateResults()
             let row = document.createElement('tr');
             let wordCol = document.createElement('td');
             let scoreCol = document.createElement('td');
-            wordCol.innerHTML = word.word;
+            wordCol.innerHTML = '<a href="https://www.dictionary.com/browse/' + word.word + '" target="_blank">' + word.word + '</a>';
             scoreCol.innerHTML = word.score;
             row.appendChild(wordCol);
             row.appendChild(scoreCol);
