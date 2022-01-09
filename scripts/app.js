@@ -16,6 +16,7 @@ function updateResults()
 
         let wordLength = parseInt(document.getElementById('wordLength').value);
         let disallowedLetters = document.getElementById('disallowedLetters').value;
+        let requiredLetters = document.getElementById('requiredLetters').value;
 
         function wordsOfLength(word) {
             return word.length == wordLength;
@@ -32,9 +33,21 @@ function updateResults()
             return true;
         }
 
+        function wordsWithLetters(word) {
+            for (let c of requiredLetters) {
+                if (!word.includes(c))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         
         var filteredWords = words.filter(wordsOfLength);
         filteredWords = filteredWords.filter(wordsWithoutLetters);
+        filteredWords = filteredWords.filter(wordsWithLetters);
 
         console.log("Number of " + wordLength + "-letter words: " + filteredWords.length + " words")
         document.getElementById("numResultsHeading").innerHTML = filteredWords.length + " Possible Results"
