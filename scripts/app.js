@@ -1,36 +1,31 @@
 var wordLength = 5;
 
-function initLetterCounts()
-{
+function initLetterCounts() {
     var map = {}
-    for (let i = 0; i < 26; i++)
-    {
+    for (let i = 0; i < 26; i++) {
         map[String.fromCharCode(i + 97)] = 0;
     }
     return map;
 }
 
-function debugLogCharCounts(charCounts)
-{
-    for (let i = 0; i < 26; i++)
-    {
+function debugLogCharCounts(charCounts) {
+    for (let i = 0; i < 26; i++) {
         console.log("Count " + String.fromCharCode(i + 97) + ": " + charCounts[String.fromCharCode(i + 97)]);
     }
 }
 
-function updateResults()
-{
+function updateResults() {
     console.log("Trying to read word list...");
     var req = new XMLHttpRequest();
-    req.onload = function(){
+    req.onload = function () {
         console.log("Got response");
         document.getElementById("numResultsHeading").innerHTML = "Heard-ling the word-lings...";
 
         var words = this.responseText.split("\n");
         words = words.map(s => s.trim());
-        
+
         console.log("Originally found " + words.length + " words");
-        
+
         var outputTable = document.getElementById("outputTable");
         outputTable.innerHTML = "";
 
@@ -38,14 +33,13 @@ function updateResults()
         let disallowedLetters = document.getElementById('disallowedLetters').value.toLowerCase();
         let requiredLetters = document.getElementById('requiredLetters').value.toLowerCase();
 
-        function wordsOfLength(word) {
+        function filterWordLength(word) {
             return word.length == wordLength;
         }
 
-        function wordsWithoutLetters(word) {
+        function filterDisallowedLetters(word) {
             for (let c of disallowedLetters) {
-                if (word.includes(c))
-                {
+                if (word.includes(c)) {
                     return false;
                 }
             }
@@ -53,10 +47,9 @@ function updateResults()
             return true;
         }
 
-        function wordsWithLetters(word) {
+        function filterRequiredLetters(word) {
             for (let c of requiredLetters) {
-                if (!word.includes(c))
-                {
+                if (!word.includes(c)) {
                     return false;
                 }
             }
@@ -65,10 +58,8 @@ function updateResults()
         }
 
         function filterKnownLettterPositions(word) {
-            for (let i = 0; i < wordLength; i++)
-            {
-                if ((document.getElementById('knownLetter' + i).value.length > 0) && word[i] != document.getElementById('knownLetter' + i).value.toLowerCase()[0])
-                {
+            for (let i = 0; i < wordLength; i++) {
+                if ((document.getElementById('knownLetter' + i).value.length > 0) && word[i] != document.getElementById('knownLetter' + i).value.toLowerCase()[0]) {
                     return false;
                 }
             }
@@ -77,22 +68,20 @@ function updateResults()
         }
 
         function filterIncorrectGuesses(word) {
-            for (let i = 0; i < wordLength; i++)
-            {
+            for (let i = 0; i < wordLength; i++) {
                 let incorrectGuesses = document.getElementById('wrongLetter' + i).value.toLowerCase();
-                
-                if (incorrectGuesses.includes(word[i]))
-                {
+
+                if (incorrectGuesses.includes(word[i])) {
                     return false;
                 }
             }
 
             return true;
         }
-        
-        var filteredWords = words.filter(wordsOfLength);
-        filteredWords = filteredWords.filter(wordsWithoutLetters);
-        filteredWords = filteredWords.filter(wordsWithLetters);
+
+        var filteredWords = words.filter(filterWordLength);
+        filteredWords = filteredWords.filter(filterDisallowedLetters);
+        filteredWords = filteredWords.filter(filterRequiredLetters);
         filteredWords = filteredWords.filter(filterKnownLettterPositions);
         filteredWords = filteredWords.filter(filterIncorrectGuesses);
 
@@ -104,10 +93,8 @@ function updateResults()
         var charCounts = initLetterCounts();
         // debugLogCharCounts(charCounts)
 
-        for (let word of filteredWords)
-        {
-            for (let c of word)
-            {
+        for (let word of filteredWords) {
+            for (let c of word) {
                 charCounts[c]++;
             }
         }
@@ -116,15 +103,12 @@ function updateResults()
 
         // Calculate score for each word
         var wordScores = [];
-        for (let word of filteredWords)
-        {
+        for (let word of filteredWords) {
             var wordScore = 0;
             var countedLetters = [];
 
-            for (let c of word)
-            {
-                if (!countedLetters.includes(c))
-                {
+            for (let c of word) {
+                if (!countedLetters.includes(c)) {
                     wordScore += charCounts[c];
                     countedLetters.push(c);
                 }
@@ -155,7 +139,7 @@ function updateResults()
         outputTable.appendChild(headerRow);
 
         // Display filtered results
-        wordScores.forEach(function(word) {
+        wordScores.forEach(function (word) {
             let row = document.createElement('tr');
             let wordCol = document.createElement('td');
             let scoreCol = document.createElement('td');
@@ -170,8 +154,7 @@ function updateResults()
     req.send();
 }
 
-function updateNumberLetters()
-{
+function updateNumberLetters() {
     console.log("Updating number of letters");
 
     var knownLettersForm = document.getElementById("knownLettersForm");
@@ -205,8 +188,7 @@ function updateNumberLetters()
     updateResults();
 }
 
-function resetWordForm()
-{
+function resetWordForm() {
     document.getElementById("wordForm").reset();
     console.log("Reset form");
 
