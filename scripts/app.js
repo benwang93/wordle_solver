@@ -182,12 +182,15 @@ function updateNumberLetters()
     // Create table for entering good and bad letters
     let correctRow = document.createElement('tr');
     let incorrectRow = document.createElement('tr');
+
+    // Add row headings
     let correctColHeader = document.createElement('td');
     let incorrectColHeader = document.createElement('td');
     correctColHeader.innerHTML = "<b>Correct letter</b>";
-    incorrectColHeader.innerHTML = "<b>Incorrect guesses</b>";
+    incorrectColHeader.innerHTML = "<b>Incorrect guesses</b><br>(Exclude these letters in these positions)";
     correctRow.appendChild(correctColHeader);
     incorrectRow.appendChild(incorrectColHeader);
+
     for (let i = 0; i < wordLength; i++) {
         let correctCol = document.createElement('td');
         let incorrectCol = document.createElement('td');
