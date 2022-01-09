@@ -35,8 +35,8 @@ function updateResults()
         outputTable.innerHTML = ""
 
         // let wordLength = parseInt(document.getElementById('wordLength').value);
-        let disallowedLetters = document.getElementById('disallowedLetters').value;
-        let requiredLetters = document.getElementById('requiredLetters').value;
+        let disallowedLetters = document.getElementById('disallowedLetters').value.toLowerCase();
+        let requiredLetters = document.getElementById('requiredLetters').value.toLowerCase();
 
         function wordsOfLength(word) {
             return word.length == wordLength;
@@ -67,7 +67,7 @@ function updateResults()
         function filterKnownLettterPositions(word) {
             for (let i = 0; i < wordLength; i++)
             {
-                if ((document.getElementById('knownLetter' + i).value.length > 0) && word[i][0] != document.getElementById('knownLetter' + i).value)
+                if ((document.getElementById('knownLetter' + i).value.length > 0) && word[i][0] != document.getElementById('knownLetter' + i).value.toLowerCase())
                 {
                     return false;
                 }
