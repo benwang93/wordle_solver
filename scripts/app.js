@@ -1,26 +1,12 @@
 var wordLength = 5
 
-function updateNumberLetters()
-{
-    console.log("Updating number of letters")
-
-    var knownLettersForm = document.getElementById("knownLettersForm");
-    knownLettersForm.innerHTML = ""
-
-    wordLength = parseInt(document.getElementById('wordLength').value);
-
-    for (let i = 0; i < wordLength; i++) {
-        knownLettersForm.innerHTML += '<input type="text" name="knownLetter' + i + '" id="knownLetter' + i + '" value="" style="width: 20px;">'
-    }
-}
-
-
 function updateResults()
 {
     console.log("Trying to read word list...")
     var req = new XMLHttpRequest();
     req.onload = function(){
         console.log("Got response")
+        document.getElementById("numResultsHeading").innerHTML = "Crunching..."
 
         var words = this.responseText.split("\n")
         words = words.map(s => s.trim());
@@ -30,7 +16,7 @@ function updateResults()
         var outputTable = document.getElementById("outputTable");
         outputTable.innerHTML = ""
 
-        let wordLength = parseInt(document.getElementById('wordLength').value);
+        // let wordLength = parseInt(document.getElementById('wordLength').value);
         let disallowedLetters = document.getElementById('disallowedLetters').value;
         let requiredLetters = document.getElementById('requiredLetters').value;
 
@@ -89,4 +75,20 @@ function updateResults()
     }
     req.open('GET', './wordlist.txt');
     req.send();
+}
+
+function updateNumberLetters()
+{
+    console.log("Updating number of letters")
+
+    var knownLettersForm = document.getElementById("knownLettersForm");
+    knownLettersForm.innerHTML = ""
+
+    wordLength = parseInt(document.getElementById('wordLength').value);
+
+    for (let i = 0; i < wordLength; i++) {
+        knownLettersForm.innerHTML += '<input type="text" name="knownLetter' + i + '" id="knownLetter' + i + '" value="" style="width: 20px;">'
+    }
+
+    updateResults()
 }

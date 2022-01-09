@@ -15,10 +15,10 @@
 
     <br>
 
-    <p>Let's start with some information on your puzzle</p>
+    <p>Let's start with some information on your puzzle!</p>
 
     <form>
-        <label for="wordLength">Number of letters</label>:</label>
+        <label for="wordLength"><b>Number of letters</b></label>:</label>
         <input type="text" name="wordLength" id="wordLength" value="5">
 
         <br>
@@ -29,19 +29,18 @@
     <br>
 
     <div>
-        <label for="disallowedLetters">Letters to exclude (no spaces or commas):</label>
+        <label for="disallowedLetters"><b>Letters to exclude</b> (no spaces or commas, duplicates OK):</label>
         <input type="text" name="disallowedLetters" id="disallowedLetters" value="">
         <br>
 
-        <label for="requiredLetters">Letters that must be included (no spaces or commas):</label>
+        <label for="requiredLetters"><b>Letters that must be included</b> (no spaces or commas, duplicates OK):</label>
         <input type="text" name="requiredLetters" id="requiredLetters" value="">
         <br>
 
-        <label for="knownLetters">Known letters:</label>
+        <label for="knownLetters"><b>Known letters:</b></label>
         <form id="knownLettersForm">
             <!-- <input type="text" name="knownLetter#" id="knownLetter#" value="" style="width: 20px;">-->
         </form>
-        <br>
 
         <input id="updateResults" type="button" value="Update results" onclick="updateResults();" />
     </div>
@@ -49,7 +48,7 @@
 
     <br>
 
-    <h2 id="numResultsHeading"> Possible results:</h2>
+    <h2 id="numResultsHeading">Possible results</h2>
     <table id="outputTable">
         <!-- <th>Filtered words</th> -->
     </table>
