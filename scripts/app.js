@@ -33,8 +33,17 @@ function updateResults() {
         let disallowedLetters = document.getElementById('disallowedLetters').value.toLowerCase();
         let requiredLetters = document.getElementById('requiredLetters').value.toLowerCase();
 
+
+        function filterWordLengthX(word, length) {
+            return word.length == length;
+        }
+
+        function filterAddS(word) {
+            return filterWordLengthX(word, wordLength - 1) && (word.slice(-1) != "s");
+        }
+
         function filterWordLength(word) {
-            return word.length == wordLength;
+            return filterWordLengthX(word, wordLength);
         }
 
         function filterDisallowedLetters(word) {
@@ -78,6 +87,21 @@ function updateResults() {
 
             return true;
         }
+
+        // Grab all 4-letter words that don't end in "s" and append "s"
+        console.log("Original num words: " + words.length);
+        var words = [...new Set(words)];
+        console.log("After unique or original: " + words.length);
+        var wordsAddS = words.filter(filterAddS);
+        console.log("Words to add s: " + wordsAddS.length);
+        console.log(wordsAddS);
+        for (let i = 0; i < wordsAddS.length; i++) {
+            wordsAddS[i] += "s";
+        }
+        words = words.concat(wordsAddS);
+        console.log("After concat: " + words.length);
+        var words = [...new Set(words)];
+        console.log("After unique: " + words.length);
 
         var filteredWords = words.filter(filterWordLength);
         filteredWords = filteredWords.filter(filterDisallowedLetters);
