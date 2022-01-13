@@ -22,8 +22,8 @@
     <p>For helping solve Wordle-like puzzles!</p>
 
     <ul>
-        <li><a href="https://www.powerlanguage.co.uk/wordle/">https://www.powerlanguage.co.uk/wordle/</a></li>
-        <li><a href="http://foldr.moe/hello-wordl/">http://foldr.moe/hello-wordl/</a></li>
+        <li><a href="https://www.powerlanguage.co.uk/wordle/" target="_blank">https://www.powerlanguage.co.uk/wordle/</a></li>
+        <li><a href="http://foldr.moe/hello-wordl/" target="_blank">http://foldr.moe/hello-wordl/</a></li>
     </ul>
 
     <p>Code and credits available on <a href="https://github.com/benwang93/wordle_solver" target="_blank">GitHub</a>.</p>
@@ -41,25 +41,13 @@
 
     <br>
 
-    <form id="wordForm">
-        <label for="disallowedLetters"><b>Letters to exclude</b> (no spaces or commas, duplicates OK):</label>
-        <input type="text" name="disallowedLetters" id="disallowedLetters" value="">
-        <br>
-
-        <label for="requiredLetters"><b>Letters that must be included</b> (no spaces or commas, duplicates OK):</label>
-        <input type="text" name="requiredLetters" id="requiredLetters" value="">
-
-        <br>
-        <br>
-
-
-        <table id="knownLettersForm">
-            <!-- Correct/Incorrect letter positions go here -->
-        </table>
-    </form>
+    <table id="wordGrid">
+        <!-- Correct/Incorrect letter positions go here -->
+    </table>
 
     <br>
 
+    <!-- <input id="addRow" type="button" value="Add row" onclick="addWordGridRow();" /> -->
     <input id="updateResults" type="button" value="Update results" onclick="updateResults();" />
     <input id="resetForm" type="button" value="Start over" onclick="resetWordForm();" />
 

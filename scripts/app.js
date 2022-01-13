@@ -1,5 +1,12 @@
 var wordLength = 5;
 
+var numGridRows = 0;
+
+let COLOR_UNUSED = "gray";
+let COLOR_WRONG_SPOT = "yellow";
+let COLOR_CORRECT = "green";
+
+
 function initLetterCounts() {
     var map = {}
     for (let i = 0; i < 26; i++) {
@@ -15,6 +22,58 @@ function debugLogCharCounts(charCounts) {
 }
 
 function updateResults() {
+    // Clear out current state
+    var lettersToExclude = "";
+    var lettersToInclude = "";
+    var incorrectGuessesArray = [];
+    var correctLetters = [];
+
+    for (let c = 0; c < wordLength; c++) {
+        incorrectGuessesArray.push([]);
+        correctLetters.push([]);
+    }
+
+    // Parse grid into expected string format
+    var rowFull = true;
+
+    for (let r = 0; r < numGridRows; r++) {
+        rowFull = true;
+
+        for (let c = 0; c < wordLength; c++) {
+            var textBox = document.getElementById("wordLetterR" + r + "C" + c);
+            
+            // Only process if cell has value
+            if (textBox.value.length > 0) {
+                let currLetter = textBox.value[0].toLowerCase();
+
+                switch (textBox.style.backgroundColor) {
+                    case COLOR_UNUSED:
+                        lettersToExclude += currLetter;
+                        break;
+                    case COLOR_WRONG_SPOT:
+                        lettersToInclude += currLetter;
+                        incorrectGuessesArray[c] += currLetter;
+                        break;
+                    case COLOR_CORRECT:
+                        lettersToInclude += currLetter;
+                        correctLetters[c] = currLetter;
+                        break;
+                }
+            }
+            else
+            {
+                console.log("R" + r + "C" + c + ": empty!")
+                rowFull = false;
+            }
+        }
+    }
+
+    // Add a new row if previous row was used
+    if (rowFull) {
+        addWordGridRow();
+    }
+
+    // Now filter words
     console.log("Trying to read word list...");
     var req = new XMLHttpRequest();
     req.onload = function () {
@@ -29,9 +88,8 @@ function updateResults() {
         var outputTable = document.getElementById("outputTable");
         outputTable.innerHTML = "";
 
-        // let wordLength = parseInt(document.getElementById('wordLength').value);
-        let disallowedLetters = document.getElementById('disallowedLetters').value.toLowerCase();
-        let requiredLetters = document.getElementById('requiredLetters').value.toLowerCase();
+        let disallowedLetters = lettersToExclude;
+        let requiredLetters = lettersToInclude;
 
 
         function filterWordLengthX(word, length) {
@@ -68,7 +126,7 @@ function updateResults() {
 
         function filterKnownLettterPositions(word) {
             for (let i = 0; i < wordLength; i++) {
-                if ((document.getElementById('knownLetter' + i).value.length > 0) && word[i] != document.getElementById('knownLetter' + i).value.toLowerCase()[0]) {
+                if ((correctLetters[i].length > 0) && (word[i] != correctLetters[i])) {
                     return false;
                 }
             }
@@ -78,9 +136,7 @@ function updateResults() {
 
         function filterIncorrectGuesses(word) {
             for (let i = 0; i < wordLength; i++) {
-                let incorrectGuesses = document.getElementById('wrongLetter' + i).value.toLowerCase();
-
-                if (incorrectGuesses.includes(word[i])) {
+                if (incorrectGuessesArray[i].includes(word[i])) {
                     return false;
                 }
             }
@@ -115,7 +171,6 @@ function updateResults() {
         // Now score remaining words
         // Start by gathering stats on occurrence of letters
         var charCounts = initLetterCounts();
-        // debugLogCharCounts(charCounts)
 
         for (let word of filteredWords) {
             for (let c of word) {
@@ -178,43 +233,87 @@ function updateResults() {
     req.send();
 }
 
+function addWordGridRow() {
+    console.log("addWordGridRow called for row number: " + numGridRows)
+
+    let rowNum = numGridRows;
+
+    var wordGrid = document.getElementById("wordGrid");
+
+    // Create table for entering good and bad letters
+    let newRow = document.createElement('tr');
+    let buttonRow = document.createElement('tr');
+
+    for (let i = 0; i < wordLength; i++) {
+        let newCol = document.createElement('td');
+        let buttonCol = document.createElement('td');
+
+        // Default color
+        newCol.style.backgroundColor = COLOR_UNUSED;
+
+        newCol.id = 'wordCellR' + rowNum + 'C' + i;
+
+        newCol.innerHTML += '<input type="text" name="wordLetterR' + rowNum + 'C' + i + '" id="wordLetterR' + rowNum + 'C' + i + '" value="" style="width: 40px; font-size: 42px; background-color: ' + COLOR_UNUSED + '">';
+        buttonCol.innerHTML += '<input name="wordButtonR' + rowNum + 'C' + i + '" id="wordButtonR' + rowNum + 'C' + i + '" type="button" value="Toggle" onclick="toggleState(' + rowNum + ', ' + i + ');" />';
+        newRow.appendChild(newCol);
+        buttonRow.appendChild(buttonCol);
+    }
+    wordGrid.appendChild(newRow);
+    wordGrid.appendChild(buttonRow);
+
+    numGridRows++;
+}
+
+function toggleState(rowNum, colNum) {
+    console.log("toggleState called for row " + rowNum + ", col " + colNum);
+    console.log("key is " + "wordLetterR" + rowNum + "C" + colNum)
+
+    var textBox = document.getElementById("wordLetterR" + rowNum + "C" + colNum);
+    var cell = document.getElementById("wordCellR" + rowNum + "C" + colNum);
+
+    console.log(" -> wordGrid.style.backgroundColor is " + cell.style.backgroundColor);
+
+    switch (textBox.style.backgroundColor) {
+        case COLOR_UNUSED:
+            cell.style.backgroundColor = COLOR_WRONG_SPOT;
+            textBox.style.backgroundColor = COLOR_WRONG_SPOT;
+            break;
+        case COLOR_WRONG_SPOT:
+            cell.style.backgroundColor = COLOR_CORRECT;
+            textBox.style.backgroundColor = COLOR_CORRECT;
+            break;
+        case COLOR_CORRECT:
+            cell.style.backgroundColor = COLOR_UNUSED;
+            textBox.style.backgroundColor = COLOR_UNUSED;
+            break;
+    }
+}
+
+function resetGrid() {
+    // Clear out grid
+    var wordGrid = document.getElementById("wordGrid");
+    wordGrid.innerHTML = ""
+
+    numGridRows = 0;
+
+    // Add first row
+    addWordGridRow();
+}
+
 function updateNumberLetters() {
     console.log("Updating number of letters");
 
-    var knownLettersForm = document.getElementById("knownLettersForm");
-    knownLettersForm.innerHTML = ""
-
     wordLength = parseInt(document.getElementById('wordLength').value);
 
-    // Create table for entering good and bad letters
-    let correctRow = document.createElement('tr');
-    let incorrectRow = document.createElement('tr');
-
-    // Add row headings
-    let correctColHeader = document.createElement('td');
-    let incorrectColHeader = document.createElement('td');
-    correctColHeader.innerHTML = "<b>Correct letter</b>";
-    incorrectColHeader.innerHTML = "<b>Incorrect guesses</b><br>(Exclude these letters in these positions)";
-    correctRow.appendChild(correctColHeader);
-    incorrectRow.appendChild(incorrectColHeader);
-
-    for (let i = 0; i < wordLength; i++) {
-        let correctCol = document.createElement('td');
-        let incorrectCol = document.createElement('td');
-        correctCol.innerHTML += '<input type="text" name="knownLetter' + i + '" id="knownLetter' + i + '" value="" style="width: 20px;">';
-        incorrectCol.innerHTML += '<input type="text" name="wrongLetter' + i + '" id="wrongLetter' + i + '" value="" style="width: 80px;">';
-        correctRow.appendChild(correctCol);
-        incorrectRow.appendChild(incorrectCol);
-    }
-    knownLettersForm.appendChild(correctRow);
-    knownLettersForm.appendChild(incorrectRow);
+    resetGrid();
 
     updateResults();
 }
 
 function resetWordForm() {
-    document.getElementById("wordForm").reset();
     console.log("Reset form");
+
+    resetGrid();
 
     updateResults();
 }
