@@ -48,6 +48,8 @@ function calculateWordScores(wordList, charScores) {
 // *********************************************
 var disallowedLetters = [];
 var requiredLetters = [];
+var incorrectGuessesArray = [];
+var correctLetters = [];
 
 function filterWordLengthX(word, length) {
     return word.length == length;
@@ -105,22 +107,21 @@ function filterIncorrectGuesses(word) {
 // Update functions
 // *********************************************
 
-function updatePossibleWords(wordList, charScores) {
-    // Calculate score for each word
-    var possibleWordScores = calculateWordScores(wordList, charScores);
+function updateWordsTable(wordList, outputTableId, columnName) {
+    var outputTable = document.getElementById(outputTableId);
 
     // Create table header
     let headerRow = document.createElement('tr');
     let wordCol = document.createElement('td');
     let scoreCol = document.createElement('td');
-    wordCol.innerHTML = "<b>Word</b>";
+    wordCol.innerHTML = "<b>" + columnName + "</b>";
     scoreCol.innerHTML = "<b>Score</b>";
     headerRow.appendChild(wordCol);
     headerRow.appendChild(scoreCol);
     outputTable.appendChild(headerRow);
 
     // Display filtered results
-    possibleWordScores.forEach(function (word) {
+    wordList.forEach(function (word) {
         let row = document.createElement('tr');
         let wordCol = document.createElement('td');
         let scoreCol = document.createElement('td');
@@ -132,18 +133,27 @@ function updatePossibleWords(wordList, charScores) {
     });
 }
 
+function updatePossibleWords(wordList, charScores) {
+    // Calculate score for each word
+    var possibleWordScores = calculateWordScores(wordList, charScores);
+
+    updateWordsTable(possibleWordScores, "outputTable", "Possible solution");
+}
+
 // Of the remaining words, what are the unknown letters remaining and how many words can we eliminate, starting with most popular letters
 // Set letters that are already known as 0
-function updateWeederWords(wordList, charCounts) {
+function updateWeederWords(wordList, charScores) {
     console.log("updateWeederWords");
+    // Calculate score for each word
+    var possibleWordScores = calculateWordScores(wordList, charScores);
+
+    updateWordsTable(possibleWordScores, "outputTableEliminate", "Weeder word");
 }
 
 function updateResults() {
     // Clear out current state
     var lettersToExclude = "";
     var lettersToInclude = "";
-    var incorrectGuessesArray = [];
-    var correctLetters = [];
 
     for (let c = 0; c < wordLength; c++) {
         incorrectGuessesArray.push([]);
@@ -246,11 +256,11 @@ function updateResults() {
         debugLogCharCounts(charCounts);
 
         // Update list of possible words
-        updatePossibleWords(wordList, charCounts);
+        updatePossibleWords(filteredWords, charCounts);
 
         // Of the remaining words, what are the unknown letters remaining and how many words can we eliminate, starting with most popular letters
         // Set letters that are already known as 0
-        updateWeederWords(wordList, charCounts);
+        updateWeederWords(filteredWords, charCounts);
     }
     req.open('GET', './wordlist.txt');
     req.send();
@@ -317,6 +327,11 @@ function toggleState(rowNum, colNum) {
 }
 
 function resetGrid() {
+    disallowedLetters = [];
+    requiredLetters = [];
+    incorrectGuessesArray = [];
+    correctLetters = [];
+    
     // Clear out grid
     var wordGrid = document.getElementById("wordGrid");
     wordGrid.innerHTML = ""
