@@ -21,6 +21,123 @@ function debugLogCharCounts(charCounts) {
     }
 }
 
+function calculateWordScores(wordList, charScores) {
+    var wordScores = [];
+    for (let word of wordList) {
+        var wordScore = 0;
+        var countedLetters = [];
+
+        for (let c of word) {
+            if (!countedLetters.includes(c)) {
+                wordScore += charScores[c];
+                countedLetters.push(c);
+            }
+        }
+
+        wordScores.push({
+            word: word,
+            score: wordScore
+        });
+    }
+
+    return wordScores
+}
+
+// *********************************************
+// Filter functions
+// *********************************************
+var disallowedLetters = [];
+var requiredLetters = [];
+
+function filterWordLengthX(word, length) {
+    return word.length == length;
+}
+
+function filterAddS(word) {
+    return filterWordLengthX(word, wordLength - 1) && (word.slice(-1) != "s");
+}
+
+function filterWordLength(word) {
+    return filterWordLengthX(word, wordLength);
+}
+
+function filterDisallowedLetters(word) {
+    for (let c of disallowedLetters) {
+        if (word.includes(c)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function filterRequiredLetters(word) {
+    for (let c of requiredLetters) {
+        if (!word.includes(c)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function filterKnownLettterPositions(word) {
+    for (let i = 0; i < wordLength; i++) {
+        if ((correctLetters[i].length > 0) && (word[i] != correctLetters[i])) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function filterIncorrectGuesses(word) {
+    for (let i = 0; i < wordLength; i++) {
+        if (incorrectGuessesArray[i].includes(word[i])) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+// *********************************************
+// Update functions
+// *********************************************
+
+function updatePossibleWords(wordList, charScores) {
+    // Calculate score for each word
+    var possibleWordScores = calculateWordScores(wordList, charScores);
+
+    // Create table header
+    let headerRow = document.createElement('tr');
+    let wordCol = document.createElement('td');
+    let scoreCol = document.createElement('td');
+    wordCol.innerHTML = "<b>Word</b>";
+    scoreCol.innerHTML = "<b>Score</b>";
+    headerRow.appendChild(wordCol);
+    headerRow.appendChild(scoreCol);
+    outputTable.appendChild(headerRow);
+
+    // Display filtered results
+    possibleWordScores.forEach(function (word) {
+        let row = document.createElement('tr');
+        let wordCol = document.createElement('td');
+        let scoreCol = document.createElement('td');
+        wordCol.innerHTML = '<a href="https://www.dictionary.com/browse/' + word.word + '" target="_blank">' + word.word + '</a>';
+        scoreCol.innerHTML = word.score;
+        row.appendChild(wordCol);
+        row.appendChild(scoreCol);
+        outputTable.appendChild(row);
+    });
+}
+
+// Of the remaining words, what are the unknown letters remaining and how many words can we eliminate, starting with most popular letters
+// Set letters that are already known as 0
+function updateWeederWords(wordList, charCounts) {
+    console.log("updateWeederWords");
+}
+
 function updateResults() {
     // Clear out current state
     var lettersToExclude = "";
@@ -88,61 +205,9 @@ function updateResults() {
         var outputTable = document.getElementById("outputTable");
         outputTable.innerHTML = "";
 
-        let disallowedLetters = lettersToExclude;
-        let requiredLetters = lettersToInclude;
+        disallowedLetters = lettersToExclude;
+        requiredLetters = lettersToInclude;
 
-
-        function filterWordLengthX(word, length) {
-            return word.length == length;
-        }
-
-        function filterAddS(word) {
-            return filterWordLengthX(word, wordLength - 1) && (word.slice(-1) != "s");
-        }
-
-        function filterWordLength(word) {
-            return filterWordLengthX(word, wordLength);
-        }
-
-        function filterDisallowedLetters(word) {
-            for (let c of disallowedLetters) {
-                if (word.includes(c)) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        function filterRequiredLetters(word) {
-            for (let c of requiredLetters) {
-                if (!word.includes(c)) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        function filterKnownLettterPositions(word) {
-            for (let i = 0; i < wordLength; i++) {
-                if ((correctLetters[i].length > 0) && (word[i] != correctLetters[i])) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        function filterIncorrectGuesses(word) {
-            for (let i = 0; i < wordLength; i++) {
-                if (incorrectGuessesArray[i].includes(word[i])) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
 
         // Grab all 4-letter words that don't end in "s" and append "s"
         console.log("Original num words: " + words.length);
@@ -162,8 +227,8 @@ function updateResults() {
         var filteredWords = words.filter(filterWordLength);
         filteredWords = filteredWords.filter(filterDisallowedLetters);
         filteredWords = filteredWords.filter(filterRequiredLetters);
-        filteredWords = filteredWords.filter(filterKnownLettterPositions);
         filteredWords = filteredWords.filter(filterIncorrectGuesses);
+        filteredWords = filteredWords.filter(filterKnownLettterPositions);
 
         console.log("Number of " + wordLength + "-letter words: " + filteredWords.length + " words");
         document.getElementById("numResultsHeading").innerHTML = filteredWords.length + " Possible Results";
@@ -180,58 +245,20 @@ function updateResults() {
 
         debugLogCharCounts(charCounts);
 
-        // Calculate score for each word
-        var wordScores = [];
-        for (let word of filteredWords) {
-            var wordScore = 0;
-            var countedLetters = [];
+        // Update list of possible words
+        updatePossibleWords(wordList, charCounts);
 
-            for (let c of word) {
-                if (!countedLetters.includes(c)) {
-                    wordScore += charCounts[c];
-                    countedLetters.push(c);
-                }
-            }
-
-            wordScores.push({
-                word: word,
-                score: wordScore
-            });
-        }
-
-
-        // Sort word list by score
-        // TODO: Make this filter selectable (score up/down, alphabetical up/down)
-        wordScores.sort((a, b) => {
-            // Sort descending order by score
-            return b.score - a.score;
-        });
-
-        // Create table header
-        let headerRow = document.createElement('tr');
-        let wordCol = document.createElement('td');
-        let scoreCol = document.createElement('td');
-        wordCol.innerHTML = "<b>Word</b>";
-        scoreCol.innerHTML = "<b>Score</b>";
-        headerRow.appendChild(wordCol);
-        headerRow.appendChild(scoreCol);
-        outputTable.appendChild(headerRow);
-
-        // Display filtered results
-        wordScores.forEach(function (word) {
-            let row = document.createElement('tr');
-            let wordCol = document.createElement('td');
-            let scoreCol = document.createElement('td');
-            wordCol.innerHTML = '<a href="https://www.dictionary.com/browse/' + word.word + '" target="_blank">' + word.word + '</a>';
-            scoreCol.innerHTML = word.score;
-            row.appendChild(wordCol);
-            row.appendChild(scoreCol);
-            outputTable.appendChild(row);
-        });
+        // Of the remaining words, what are the unknown letters remaining and how many words can we eliminate, starting with most popular letters
+        // Set letters that are already known as 0
+        updateWeederWords(wordList, charCounts);
     }
     req.open('GET', './wordlist.txt');
     req.send();
 }
+
+// *********************************************
+// UI functions
+// *********************************************
 
 function addWordGridRow() {
     console.log("addWordGridRow called for row number: " + numGridRows)
