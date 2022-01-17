@@ -325,7 +325,7 @@ function addWordGridRow() {
 
         newCol.id = 'wordCellR' + rowNum + 'C' + i;
 
-        newCol.innerHTML += '<input type="text" name="wordLetterR' + rowNum + 'C' + i + '" id="wordLetterR' + rowNum + 'C' + i + '" value="" style="width: 40px; font-size: 42px; background-color: ' + COLOR_UNUSED + '">';
+        newCol.innerHTML += '<input type="text" name="wordLetterR' + rowNum + 'C' + i + '" id="wordLetterR' + rowNum + 'C' + i + '" value="" style="width: 55px; font-size: 42px; background-color: ' + COLOR_UNUSED + '">';
         buttonCol.innerHTML += '<input name="wordButtonR' + rowNum + 'C' + i + '" id="wordButtonR' + rowNum + 'C' + i + '" type="button" value="Toggle" onclick="toggleState(' + rowNum + ', ' + i + ');" />';
         newRow.appendChild(newCol);
         buttonRow.appendChild(buttonCol);

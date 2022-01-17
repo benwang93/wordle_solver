@@ -1,0 +1,97 @@
+<html>
+
+<head>
+    <title>Wordle Solver Replay</title>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-24Y68ZD9Y5"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'G-24Y68ZD9Y5');
+    </script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <h1>Wordle Solver</h1>
+    <p>For helping solve Wordle-like puzzles!</p>
+
+    <ul>
+        <li><a href="https://www.powerlanguage.co.uk/wordle/" target="_blank">https://www.powerlanguage.co.uk/wordle/</a></li>
+        <li><a href="http://foldr.moe/hello-wordl/" target="_blank">http://foldr.moe/hello-wordl/</a></li>
+        <li><a href="https://octokatherine.github.io/word-master/" target="_blank">https://octokatherine.github.io/word-master/</a></li>
+    </ul>
+
+    <p>Code and credits available on <a href="https://github.com/benwang93/wordle_solver" target="_blank">GitHub</a>.</p>
+
+    <p>Let's start with some information on your puzzle!</p>
+
+    <form>
+        <label for="wordLength"><b>Number of letters</b></label>:</label>
+        <input type="text" name="wordLength" id="wordLength" value="5">
+
+        <br>
+
+        <input id="updateResults" type="button" value="Update number of Letters" onclick="updateNumberLetters();" />
+    </form>
+
+    <br>
+
+    <p>
+        Now enter letters from your guesses below. Click <b>Toggle</b> to change each cell's color. Then click <b>Update results</b>.
+        <br>
+        <i>Hint: On a computer, click Tab to jump between cells/buttons and Spacebar to toggle color.</i>
+    </p>
+    <table id="wordGrid">
+        <!-- Correct/Incorrect letter positions go here -->
+    </table>
+
+    <br>
+
+    <!-- <input id="addRow" type="button" value="Add row" onclick="addWordGridRow();" /> -->
+    <input id="updateResults" type="button" value="Update results" onclick="updateResults();" />
+    <input id="resetForm" type="button" value="Start over" onclick="resetWordForm();" />
+
+    <br>
+
+    <br>
+
+    <h2 id="numResultsHeading">Possible results</h2>
+    <p>The higher the score, the more possible words this guess can eliminate.</p>
+
+    <table>
+        <tr>
+            <td style="padding-right: 100px;">
+                <center>
+                    <h3>Possible solutions<br>(obey all rules)</h3>
+    
+                    <table id="outputTable" border="1">
+                        <!-- Filtered words go here -->
+                    </table>
+                </center>
+            </td>
+            <td>
+                <center>
+                    <h3>Best weeder words<br>(contains most unseen letters)</h3>
+    
+                    <table id="outputTableEliminate" border="1"></table>
+                        <!-- Filtered words go here -->
+                    </table>
+                </center>
+            </td>
+        </tr>
+    </table>
+
+    <script src="scripts/app.js"></script>
+    <script>
+        updateNumberLetters();
+    </script>
+</body>
+
+</html>
