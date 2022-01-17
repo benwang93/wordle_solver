@@ -44,6 +44,34 @@ function calculateWordScores(wordList, charScores) {
 }
 
 // *********************************************
+// Dictionary functions
+// *********************************************
+function preprocessGetRequestResults(responseText) {
+    var words = responseText.split("\n");
+    words = words.map(s => s.trim());
+
+    console.log("Originally found " + words.length + " words");
+
+    disallowedLetters = lettersToExclude;
+    requiredLetters = lettersToInclude;
+
+    // Grab all 4-letter words that don't end in "s" and append "s"
+    console.log("Original num words: " + words.length);
+    var words = [...new Set(words)];
+    console.log("After unique or original: " + words.length);
+    var wordsAddS = words.filter(filterAddS);
+    console.log("Words to add s: " + wordsAddS.length);
+    console.log(wordsAddS);
+    for (let i = 0; i < wordsAddS.length; i++) {
+        wordsAddS[i] += "s";
+    }
+    words = words.concat(wordsAddS);
+    console.log("After concat: " + words.length);
+    var words = [...new Set(words)];
+    console.log("After unique: " + words.length);
+}
+
+// *********************************************
 // Filter functions
 // *********************************************
 var disallowedLetters = [];
@@ -168,11 +196,11 @@ function updateWeederWords(wordList, charScores) {
 
     // Update charScores to prioritize discovering new words
     // Don't care whether letters are in the right or wrong place
-        // var filteredLengthWords = words.filter(filterWordLength);
-        // filteredWords = filteredLengthWords.filter(filterDisallowedLetters);
-        // filteredWords = filteredWords.filter(filterRequiredLetters);
-        // filteredWords = filteredWords.filter(filterIncorrectGuesses);
-        // filteredWords = filteredWords.filter(filterKnownLettterPositions);
+    // var filteredLengthWords = words.filter(filterWordLength);
+    // filteredWords = filteredLengthWords.filter(filterDisallowedLetters);
+    // filteredWords = filteredWords.filter(filterRequiredLetters);
+    // filteredWords = filteredWords.filter(filterIncorrectGuesses);
+    // filteredWords = filteredWords.filter(filterKnownLettterPositions);
     // All previously seen (whether correct or incorrect) letters have a score of 0
     for (let c of disallowedLetters) {
         charScores[c] = 0;
@@ -207,7 +235,7 @@ function updateResults() {
 
         for (let c = 0; c < wordLength; c++) {
             var textBox = document.getElementById("wordLetterR" + r + "C" + c);
-            
+
             // Only process if cell has value
             if (textBox.value.length > 0) {
                 let currLetter = textBox.value[0].toLowerCase();
@@ -226,8 +254,7 @@ function updateResults() {
                         break;
                 }
             }
-            else
-            {
+            else {
                 console.log("R" + r + "C" + c + ": empty!")
                 rowFull = false;
             }
@@ -246,28 +273,7 @@ function updateResults() {
         console.log("Got response");
         document.getElementById("numResultsHeading").innerHTML = "Heard-ling the word-lings...";
 
-        var words = this.responseText.split("\n");
-        words = words.map(s => s.trim());
-
-        console.log("Originally found " + words.length + " words");
-
-        disallowedLetters = lettersToExclude;
-        requiredLetters = lettersToInclude;
-
-        // Grab all 4-letter words that don't end in "s" and append "s"
-        console.log("Original num words: " + words.length);
-        var words = [...new Set(words)];
-        console.log("After unique or original: " + words.length);
-        var wordsAddS = words.filter(filterAddS);
-        console.log("Words to add s: " + wordsAddS.length);
-        console.log(wordsAddS);
-        for (let i = 0; i < wordsAddS.length; i++) {
-            wordsAddS[i] += "s";
-        }
-        words = words.concat(wordsAddS);
-        console.log("After concat: " + words.length);
-        var words = [...new Set(words)];
-        console.log("After unique: " + words.length);
+        var words = preprocessGetRequestResults(this.responseText);
 
         var filteredLengthWords = words.filter(filterWordLength);
         filteredWords = filteredLengthWords.filter(filterDisallowedLetters);
@@ -366,7 +372,7 @@ function resetGrid() {
     requiredLetters = [];
     incorrectGuessesArray = [];
     correctLetters = [];
-    
+
     // Clear out grid
     var wordGrid = document.getElementById("wordGrid");
     wordGrid.innerHTML = ""
